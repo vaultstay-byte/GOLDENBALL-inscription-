@@ -103,14 +103,14 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     <div class="card">
       <svg width="56" height="56" viewBox="0 0 56 56" fill="none" stroke="#FF6A00" stroke-width="2.5" aria-hidden="true"><circle cx="28" cy="28" r="24"/><path d="M28 4v48M4 28h48M10 10c10 8 10 28 0 36M46 10c-10 8-10 28 0 36"/></svg>
       <h2>Basketball</h2>
-      <p class="mu">Tournoi par équipes · [Nombre de joueurs par équipe] · [Catégories]</p>
+      <p class="mu">Tournoi de 14 équipes · 5 contre 5</p>
       <p><b class="or" data-prix></b> par équipe</p>
       <button class="btn full" data-sport="Basketball">Inscrire une équipe</button>
     </div>
     <div class="card">
       <svg width="56" height="56" viewBox="0 0 56 56" fill="none" stroke="#FF6A00" stroke-width="2.5" aria-hidden="true"><circle cx="28" cy="28" r="24"/><path d="M28 17l10 7-4 12H22l-4-12z"/><path d="M28 17V4M38 24l13-4M34 36l8 11M22 36l-8 11M18 24L5 20"/></svg>
-      <h2>Football</h2>
-      <p class="mu">Tournoi par équipes · [Nombre de joueurs par équipe] · [Catégories]</p>
+      <h2>Football</h2>>
+      <p class="mu">Tournoi de 12 équipes · 6 contre 6</p>
       <p><b class="or" data-prix></b> par équipe</p>
       <button class="btn full" data-sport="Football">Inscrire une équipe</button>
     </div>
@@ -222,9 +222,37 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 
 </main>
 
-<dialog id="rule">
-  <h2>Règlement</h2>
-  <p class="mu">[Écrivez ici le règlement du tournoi : équipes, horaires, fair-play, remboursements…]</p>
+<dialog id="rule" style="max-width:640px;max-height:85vh;overflow:auto">
+  <h2>Règlement officiel</h2>
+  <p class="mu">GOLDEN BALL 2026 · Participation des équipes</p>
+
+  <h3>Article 1 — Obligation de présence et forfait automatique</h3>
+  <p>Chaque équipe est tenue de se présenter sur le site de compétition au moins dix (10) minutes avant l’heure officielle de son match, avec l’ensemble des joueurs requis. Toute équipe absente à l’heure prévue du coup d’envoi pourra être déclarée forfait après constat officiel de son absence par l’organisation. Une équipe déclarée forfait perd le match selon les modalités sportives fixées par le comité d’organisation.</p>
+
+  <h3>Article 2 — Intégrité sportive et interdiction de fraude</h3>
+  <p>Toute tentative de fraude concernant l’identité des joueurs, l’utilisation d’un joueur non inscrit ou suspendu, la falsification de documents ou toute manipulation volontaire des résultats est strictement interdite. En cas de fraude avérée, l’organisation pourra prononcer la perte du match, la disqualification de l’équipe et, selon la gravité des faits, son exclusion définitive de la compétition.</p>
+
+  <h3>Article 3 — Tolérance zéro face aux violences</h3>
+  <p>Toute agression physique, bagarre, tentative d’affrontement, menace crédible ou incitation à la violence est formellement interdite, que les faits se produisent sur le terrain, sur les bancs ou dans l’enceinte de la compétition. L’organisation pourra interrompre la rencontre, faire expulser les personnes impliquées et disqualifier l’équipe responsable lorsque les faits le justifient. Les faits graves pourront également être signalés aux autorités compétentes.</p>
+
+  <h3>Article 4 — Respect inconditionnel du corps arbitral</h3>
+  <p>Les arbitres sont chargés de diriger les rencontres et leurs décisions de jeu doivent être respectées. Les insultes, intimidations, menaces, tentatives d’influence ou gestes agressifs envers un arbitre sont interdits. Selon la gravité des faits, le joueur ou responsable concerné pourra être expulsé, suspendu ou sanctionné, et son équipe pourra être disqualifiée en cas de comportement collectif grave.</p>
+
+  <h3>Article 5 — Responsabilité disciplinaire des responsables d’équipe</h3>
+  <p>Chaque équipe doit désigner un responsable officiel chargé de représenter ses joueurs auprès du comité d’organisation. Ce responsable doit contribuer au maintien de l’ordre, transmettre les informations officielles et veiller au respect du règlement par son équipe. Tout comportement collectif fautif, refus organisé d’obtempérer ou incitation à perturber la compétition pourra entraîner des sanctions à l’encontre de l’équipe, sans préjudice des sanctions individuelles.</p>
+
+  <h3>Article 6 — Interdiction de perturber le déroulement du tournoi</h3>
+  <p>Aucune équipe ne peut interrompre volontairement une rencontre, empêcher la reprise du jeu, envahir le terrain pour contester une décision ou exercer des pressions sur l’organisation. Tout refus injustifié de reprendre le match après instruction officielle pourra entraîner une défaite par forfait. En cas de perturbation grave ou répétée, le comité pourra prononcer une exclusion de la compétition.</p>
+
+  <h3>Article 7 — Fair-play, provocations et comportements antisportifs</h3>
+  <p>Les provocations délibérées, insultes entre joueurs, gestes humiliants, célébrations visant à provoquer une altercation et comportements susceptibles de déclencher des violences sont interdits. Les actes commis par les joueurs, remplaçants ou encadreurs pourront donner lieu à des avertissements, exclusions, suspensions ou autres sanctions adaptées à leur gravité. La répétition de tels actes pourra entraîner des sanctions collectives.</p>
+
+  <h3>Article 8 — Autorité disciplinaire et caractère obligatoire du règlement</h3>
+  <p>Le comité d’organisation de GOLDEN BALL 2026 est habilité à constater les manquements au présent règlement et à appliquer les sanctions prévues, sur la base des rapports des arbitres, des responsables officiels et des éléments vérifiables disponibles. Les sanctions peuvent comprendre un avertissement, une expulsion individuelle, une suspension, une défaite par forfait ou une disqualification. Toute décision doit être motivée par les faits constatés et respecter les procédures disciplinaires annoncées avant le début de la compétition.</p>
+
+  <h3>Engagement officiel</h3>
+  <p>L’inscription d’une équipe à GOLDEN BALL 2026 implique l’acceptation du présent règlement par son responsable officiel. Celui-ci s’engage à en informer tous les joueurs et à veiller à son respect pendant toute la durée de la compétition. La méconnaissance du règlement ne dispense pas l’équipe de ses obligations.</p>
+
   <button class="btn" onclick="this.closest('dialog').close()">Fermer</button>
 </dialog>
 
@@ -232,12 +260,13 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 // ====== À MODIFIER ======
 const CFG = {
   nom: "GOLDENBALL",
-  date: "[DATE]",
-  lieu: "[LIEU]",
-  tel: "[TÉLÉPHONE]",
-  email: "[EMAIL]",
+  date: "21, 22 et 23 décembre 2026",
+  lieu: "Aléa Park",
+  tel: "+228 99 86 59 60",
+  email: "vaultstay@gmail.com",
   prix: 35000,
   endpoint: "" // facultatif : lien Formspree pour recevoir chaque inscription (https://formspree.io/f/xxxx)
+};
 };
 // ========================
 
