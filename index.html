@@ -76,6 +76,10 @@ input[type=radio],input[type=checkbox]{width:20px;height:20px;accent-color:var(-
 .stamp{display:inline-block;margin-top:16px;padding:4px 16px;border:3px solid var(--bg);border-radius:8px;transform:rotate(-6deg);font-size:28px;letter-spacing:.1em}
 dialog{max-width:520px;background:var(--card);color:var(--tx);border:1px solid var(--line);border-radius:16px;padding:32px}
 dialog::backdrop{background:rgba(0,0,0,.7)}
+.how{margin-top:24px;padding:20px;border:1px dashed var(--field);border-radius:12px}
+.how p{margin:0 0 8px}
+.ussd{font-family:"Barlow Condensed",Impact,sans-serif;font-weight:800;font-size:28px;color:var(--or);word-break:break-all}
+.btn.wa{display:inline-flex;align-items:center;justify-content:center;margin-top:20px;text-decoration:none}
 @media print{.noprint{display:none!important}body{background:#fff}}
 </style>
 </head>
@@ -93,7 +97,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
   <div class="wrap hero">
     <p class="kick">Inscriptions ouvertes · <span data-c="date"></span> · <span data-c="lieu"></span></p>
     <h1>Basketball<br><em>&amp; Football</em></h1>
-    <p class="lead">Inscrivez votre équipe en ligne, réglez les frais de participation et recevez votre reçu immédiatement.</p>
+    <p class="lead">Inscrivez votre équipe en ligne, réglez les frais de participation et recevez votre reçu dès que votre paiement est vérifié.</p>
     <div class="row">
       <button class="btn" data-go="inscription">Inscrire mon équipe</button>
       <button class="btn ghost" id="rules">Voir le règlement</button>
@@ -109,8 +113,8 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     </div>
     <div class="card">
       <svg width="56" height="56" viewBox="0 0 56 56" fill="none" stroke="#FF6A00" stroke-width="2.5" aria-hidden="true"><circle cx="28" cy="28" r="24"/><path d="M28 17l10 7-4 12H22l-4-12z"/><path d="M28 17V4M38 24l13-4M34 36l8 11M22 36l-8 11M18 24L5 20"/></svg>
-      <h2>Football</h2>>
-      <p class="mu">Tournoi de 12 équipes · 6 contre 6</p>
+      <h2>Football</h2>
+      <p class="mu">Tournoi de 15 équipes · 6 contre 6</p>
       <p><b class="or" data-prix></b> par équipe</p>
       <button class="btn full" data-sport="Football">Inscrire une équipe</button>
     </div>
@@ -119,12 +123,12 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     <h2 style="margin-bottom:32px">Comment ça marche</h2>
     <div class="grid" style="padding:0;gap:32px">
       <div><div class="cond num">01</div><h3>Remplissez le formulaire</h3><p class="mu">Nom de l’équipe, responsable, contact et sport choisi.</p></div>
-      <div><div class="cond num">02</div><h3>Payez vos frais</h3><p class="mu">Règlement en ligne des frais d’inscription de l’équipe.</p></div>
-      <div><div class="cond num">03</div><h3>Recevez votre reçu</h3><p class="mu">Reçu officiel affiché et envoyé par email après paiement.</p></div>
+      <div><div class="cond num">02</div><h3>Payez vos frais</h3><p class="mu">Envoyez les frais par T-Money ou Moov, puis saisissez votre numéro de transaction.</p></div>
+      <div><div class="cond num">03</div><h3>Recevez votre reçu</h3><p class="mu">Reçu officiel remis après vérification de votre paiement.</p></div>
     </div>
   </div>
   <div class="band"><div class="wrap">
-    <div><div class="cond" data-prix></div><p style="margin:8px 0 0;font-size:20px;font-weight:600">par équipe · reçu officiel remis après paiement</p></div>
+    <div><div class="cond" data-prix></div><p style="margin:8px 0 0;font-size:20px;font-weight:600">par équipe · reçu officiel remis après vérification du paiement</p></div>
     <button class="btn" data-go="inscription">Je m’inscris</button>
   </div></div>
   <div class="wrap mu" style="padding-top:32px;padding-bottom:32px">Contact : <span data-c="tel"></span> · <span data-c="email"></span></div>
@@ -168,19 +172,50 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
   <div class="wrap">
     <nav class="steps noprint" data-steps="2"></nav>
     <div class="cols">
-      <form class="card" id="f-pay">
+      <div class="card" id="pay-card">
         <h1 style="font-size:44px;margin:0 0 24px">Paiement</h1>
-        <fieldset style="margin:0"><legend>Mode de paiement</legend>
-          <div class="row">
-            <label class="opt"><input type="radio" name="mode" value="Mobile Money" checked>Mobile Money</label>
-            <label class="opt"><input type="radio" name="mode" value="Carte bancaire">Carte bancaire</label>
+
+        <div id="pay-step1">
+          <fieldset style="margin:0"><legend>Mode de paiement</legend>
+            <div class="row">
+              <label class="opt"><input type="radio" name="mode" value="T-Money" checked>T-Money</label>
+              <label class="opt"><input type="radio" name="mode" value="Moov Money">Moov Money</label>
+            </div>
+          </fieldset>
+
+          <div class="how" id="how-tmoney">
+            <p><b>Payer avec T-Money</b></p>
+            <p>Composez ce code sur votre téléphone :</p>
+            <p class="ussd" id="ussd"></p>
+            <p class="mu">Le montant est déjà inclus dans le code. Confirmez avec votre code secret.</p>
           </div>
-        </fieldset>
-        <div id="mm-box" style="margin-top:24px"><label class="lb" for="mm">Numéro Mobile Money</label><input id="mm" name="mm" type="tel" placeholder="+225 00 00 00 00" required></div>
-        <button class="btn full" type="submit">Payer <span data-prix></span></button>
-        <p class="err" id="err" role="alert"></p>
-        <p class="note">Vous recevez une demande de confirmation sur votre téléphone. Le reçu s’affiche ensuite et part par email.</p>
-      </form>
+          <div class="how" id="how-moov" hidden>
+            <p><b>Payer avec Moov Money</b></p>
+            <p>Envoyez <b data-prix></b> par transfert d’argent Moov Money au numéro :</p>
+            <p class="ussd" data-c="moov"></p>
+          </div>
+
+          <form id="f-pay">
+            <p class="mu" style="margin:20px 0 0">Après le paiement, vous recevez un SMS de confirmation avec un numéro de transaction. Saisissez-le ici.</p>
+            <div style="margin-top:16px"><label class="lb" for="trx">Numéro de transaction</label><input id="trx" name="transaction" type="text" required minlength="6" autocomplete="off"></div>
+            <div style="margin-top:16px"><label class="lb" for="pnum">Numéro avec lequel vous avez payé</label><input id="pnum" name="num_paiement" type="tel" placeholder="+228 00 00 00 00" required></div>
+            <button class="btn full" type="submit">J’ai payé, envoyer</button>
+            <p class="err" id="err" role="alert"></p>
+          </form>
+        </div>
+
+        <div id="pay-step2" hidden>
+          <h2 style="font-size:32px">Paiement en cours de vérification</h2>
+          <p>Nous vérifions que votre paiement est bien arrivé. Dès que c’est fait, l’organisateur vous envoie un <b>code de validation</b> par SMS ou WhatsApp.</p>
+          <p class="mu">Contact : <span data-c="tel"></span></p>
+          <form id="f-code">
+            <div style="margin-top:20px"><label class="lb" for="code">Code de validation</label><input id="code" type="text" placeholder="GB-XXXXX" autocomplete="off" required></div>
+            <button class="btn full" type="submit">Valider et voir mon reçu</button>
+            <p class="err" id="err2" role="alert"></p>
+          </form>
+        </div>
+      </div>
+
       <aside class="card">
         <h2 style="font-size:28px;margin-bottom:20px">Récapitulatif</h2>
         <div class="line"><span>Équipe</span><b data-f="equipe"></b></div>
@@ -200,6 +235,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
     <div class="tick noprint"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0D0D0D" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></div>
     <h1 class="noprint">Paiement confirmé</h1>
     <p class="mu noprint" style="font-size:18px;margin:0">Votre équipe est inscrite. Voici votre reçu.</p>
+    <a class="btn wa noprint" id="wa" target="_blank" rel="noopener">Rejoindre le canal WhatsApp du tournoi</a>
     <div class="receipt">
       <div class="hd"><span class="cond">Reçu de paiement</span><span>N° <span data-f="recu"></span></span></div>
       <div class="bd">
@@ -209,6 +245,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
         <div class="line"><span>Responsable</span><b data-f="responsable"></b></div>
         <div class="line"><span>Date</span><b data-f="date"></b></div>
         <div class="line"><span>Mode de paiement</span><b data-f="mode"></b></div>
+        <div class="line"><span>N° de transaction</span><b data-f="transaction"></b></div>
         <div class="total"><span>Montant payé</span><span class="cond" data-prix></span></div>
         <div class="stamp cond">Payé</div>
       </div>
@@ -252,7 +289,6 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 
   <h3>Engagement officiel</h3>
   <p>L’inscription d’une équipe à GOLDEN BALL 2026 implique l’acceptation du présent règlement par son responsable officiel. Celui-ci s’engage à en informer tous les joueurs et à veiller à son respect pendant toute la durée de la compétition. La méconnaissance du règlement ne dispense pas l’équipe de ses obligations.</p>
-
   <button class="btn" onclick="this.closest('dialog').close()">Fermer</button>
 </dialog>
 
@@ -265,8 +301,14 @@ const CFG = {
   tel: "+228 99 86 59 60",
   email: "vaultstay@gmail.com",
   prix: 35000,
-  endpoint: "" // facultatif : lien Formspree pour recevoir chaque inscription (https://formspree.io/f/xxxx)
+  moov: "+228 99 86 59 60",
+  tmoney: "*145*5*{MONTANT}*1368623#",
+  endpoint: "" // lien Formspree pour recevoir chaque inscription (https://formspree.io/f/xxxx)
 };
+// Coffre : le lien WhatsApp est chiffré, une copie par code de validation
+const VAULT = ["Ov4vdH34TjIP/KgXCacW1Bcv0rx8toGjiinno3mbbizHtxSJvghNeuyaEN2NHtOw2sGErPegIgsiigM3gb9t6DkDNcrOnsVsRrX/RCw7WlpJjHfxBGIQNLEj/QI/wyJ3Zg==", "trASt+7rK2VkWjd1MpioaIUKF11A17T2Y4HIJeKYQYyojUz7Pg1MxQXXwN4GjiZ1DFMD4QAn1f6hLmBMQuU/CrU2juWlFvJEyQN6ws4kDz4m3TTZWqHYDCUUgJ1odsO4jw==", "GIxuSB/7pNsjTRNsxDenWXOIga5u8lPhaksY/CjAZgBRN0cDF0DFcIyExkj0m+EZcH3690eIZ7wZckbn4yzcwk3OgoP5YYjafKPKZhg6BoXVLRKS34OfVZcnGN0bQkgUPA==", "Z5m05IOoteHa3Oy0pkEJaI3pxUR8G23D6IWMuaIOG7UJkYHru/h+iyaqHTXulr//XNOXVfz3QMJSzUJp5Jk5dTMFggRJVKF9Ilt16M5LACT80TofRY7BA5kg4wlehxhvlg==", "WgNSayoPLoCbr+GldGqJ+v/lkmTgVvgwZR9RvOtIuSxjXRg32RIVf98wfY6zI8GjbVFRh6JhWvTO9ltzNKMCmQZIEt4OYTWQIdr0DmA/jr3amooF3SBwsm1fB9lMolYZ2A==", "eIaaQdieZqfeLJCtQU4eAnwhsLCphSlnk5d17O9pnw4HQh3amx8jkC0PQVxUNpiTdzob5ZCtVne8wzQ0BfE2KComVnyNPCTKsh2QQw5rc+AXupvxxIijFrjVp80rPZHcQw==", "I1lp0AYa13pqcVtjGcJ6ns5XfohS484fqrtdk3Aa4v8Hqtba+3IjzKlEStR8mSfcXssMlAyO31U8CYt487tOQRxqdAPXD2y0J5O5PTTEvA7bH+9YcZEnjbHRi6mDUZWU9w==", "2pSUDR2I+fDJE1ZqqeF5h1aCtCs+Qnw70wFJeKHjPqysb3hrR3/q0ErIRJv6fixi/hbW0br0OuYrWbNySoyJGSXe5SBm1jFsrLTzzvqVUNkdunxvTlFmc/7fAPABMfXYgA==", "r7BsvzBUoFLqP6t8sfSpaJyQ9rdJ4AhjPfyYjYEuftkZURyKF6nRqX7BRHKyupjK8jGA7292Kp/klsGijgfvehdER1MMiJ4QMzpJlfKepZP/VGFcjHjevzTXjToKKZ5G5w==", "kwpPq735lI56tveXuk++kMKaLYfP0Dzjx4qlORJvq7VZa+HioHce+alP0a/VLlX1AOl20pCM+3vOGG41ax1iZemUzfFSO1MDwjZBeQkuy2bEFnh33SZ5MkDxkEay0jTEHQ==", "LBPhmFDA56TGruDK8B5UCJfGvpFr8TjSyfVs56p34c50e4skNLBZf9UewyMMUBgL2LQDj2R2goTKYD85P7PO9n0CDMKFXdxQimHIcEbSHzIT5XYnk7g/kSzA3z/9/0OLKw==", "4NcxaY50ZR8nJh/D3qms9gWpcnuHFGvwzgka8ReGQojF16DlMWnRkg7YbYKKlp6TUPI0wateciZKVyiOpDhP9X0GkBhPB/ON7QTcbmU6I1RTROhBv/GeSx+tMPl69ca9fA==", "2mSwWP5iDnx/aJ8QWEHEcRbGo5C6l2YjM7Vdrxxqn67F4BCn7zze0qWBeC3qGqxCwouzO8Bjj2peTZ13duVNatNzss0VmA4+9oe8ltwxLQ5M4gc/pZAyv1xSeqiDK6NQWA==", "9yMwJssJpC/LrHYtzM/5wx8ZwvoAly3iS4LFgYC5u49sIfDr2syt1Xdm9HJXwFtwGIsM2LcmfiKGdsSMhOdQySnWuVCoKCCnLEsF1uyXSEj+ByxfPA7Ru4S/DMITWMS6Gg==", "RRm6zz/mxGaSuTCglwgwyv4uWTl95S5wl0gHPg3qOP24PioCQ1hAtHb17R+nYOKZ92pg0LUw2iWfCO3rHjA5tCaMFccdDxGNUc29vuLYJe9VCv0gOLKXp9uF0S//YWWfOw==", "qv6RI8PS4mpWWifQhEpfbldaWWlzcK4IEsKBgAl/1qukbpoIm9hafsF/3HG7CmOI2oMhEtgvUVVumwzDxPAykD5HN07rfu+gJNAsmuAum1wxeXdghS5yZ3FHnhcAu/G8sw==", "yUyZPIqkqE3vYHRpM20YlKuGaAQ4A60fdfJkuxgWLVy/2k6curWwpWfqLRzuma8/b05/5HJbzA1hx7TB2sttjdbtjm70Gj/0oA/KJmtOAv7yYJG2+ocrAklem5HMssEq9Q==", "93CvR+NGuD5rDrOvHxqMMVrxtHl/YMfVgTWapdahvfXWafVrnZjNLbyVZf9bkwfsKhE81kj5Vvs9csX6u9ZdzSmv6oO9e+/GNlbBSSv9OmBLtPIzONfo5uQFrqpCE04BMQ==", "hcO0bM9ufWVyjhqH5WAhFea4fKX9akU/FEoGUViU6FP9VCt5LSR/EdFxsYEk3U4VnFu5RG/1UCYuwFu5LUDidzSHEbElAaqv5QKvhorrR+sTQgjwBR1HYXHuJMaJWa253w==", "zVhTdy5FOWKbgJke1aCMF8cUbriebZxZHCnAQvzhuheMa6KRkJu8HxViz+1cJXwAQOHErEI2/6sQDuALeyq3kkVi4ZoDPDZurXSkphOLxPPo0aFTHbdTvEqa8dPI155GpA==", "pxQ9YC7dZRCaTidAHUXVh9DGG/X+j/Gq4HegrQWNRYji83L/GJxlFX9p5Fgt8aONlSYycLiuVavSWcu+lwAYnUTGQSXtp/C48YFuAuczyoOK9ukCSj3pMlnfbOm+ZYaOZA==", "FNsV6kEi9VgskTMhgkQqW8ehpwmGaQphbjayA6bhWuZqAtFEyrXB2CCq80miHX98pu0CjHTZjvA1RQyN9sSfJNPji9omlj/lWHiU7OehDZvEJiZJYuu9HOiydwhktEri9Q==", "vdPR4/T5AguGyHQUpZRRqFATZPB59zSuXiJCkIn65jCyigWd18DD6f0iGz/uqC+2VXIxjRN22ArkEVlAIWp9EjcRxZeMSKkoXzym/WNAULP/4Gei9knHQPI6z0U7Ikzu/g==", "dBfX9hVNFk3ecN5bh0tFNyrAeOeHpvYOrBPg+YrALdzXMDaW+/RvIIjgRe4jy4/E+QNNPjo0wfe97iD8xER9TgJEDAocoG9qGe7TEC/cuFr5kEBOBiw/Tn3sF20xWMQV3g==", "MiLNZMCd0vEFrVy8riAd7+70LEjCk+LHyjJRf0+NW7JkfgF95yJ1Sx8f1RYVbB93Sso8y5riiOx5Y81zFJtBq+By05TyGwhnC62yvTcGewrQQ8JdK9t5UmFPISPQZr3KQA==", "a52l3x2Ybjci8AmnGRxHfKM6BlnyBdpVeCp19cAt+C3XMyhXwTKPCt/MAloWQDseopPrv9p8U2xRkdmNaWoLX4W3IykCl5FdBQwSJ1Hme6ggX471SlBuyh7p2DeHhQU8Cw==", "j/KuMBBQ7220wB44Ua87+MezB7bkK7WhMcPnj1YkljaB31frl9cmgest5+0b2YoAlZH3LeScDLk4eGJePefOdaXrllvjZMypxRsZrFgz0sB6fKapW8dJiffnduZa7SIcdA==", "atI3hHvO6s+a1yhFmu5SjpQOOpbqEoMJedsBgSyp3xcLhm1KcvbXnXjXNloOt2RSCFzQ+48ktU6nJVVoNH07DISr32QuIdkVncq037RiWBi5PCRc0tLRKm0ptSS+T5z1FQ==", "ZzO8ju/exZwT3Tx2Ae4lO7wp+28dsRCplzL6YTlqjCn5wHj0dUIBdGXTms3G92Fchh9yRkFjLT4ms+34juchIbWO4U9xB9rKoZwXpDnxk7nWh0kxvzC4gAEKUIcDpmxzKQ==", "esNIAHYZAqwYOrP/Ce0ohCqTDuAr1gq8zef0+XYaVVj+LtitIQcjroiEMqheXHIs3gJRO5XCSh7idyT0QkI2PtdN3Ao2mHl5JR21PsT4NckQ9P66ATz27nFH6oD+3CMMug==", "kojnbixTIBtbYAaA5ljOU95HVR4wVS6dc9K1QYPjnLIUKvqK9e1b/XbGlpB6/iewooRCIQS0D1VNwlYixQ5VCAsQaWN3e8ssX7mEKMxeTna9z00rQGy83wSCFHkLsM41pA==", "vtVeHXNnhkHGWhVQF/nuVwwxBJlyG10TgZEax8Awo/Wc539npHWGEFZ3OPdSraBP7EGt3Tj/Djet0DuO4wr0WG46I7vXKk4oPfiANP9YxAtJK4DxnFiRK4Gpt9oQUlAycQ==", "XNobmlv1MB6wrdfhnZgMybbUbOjZ4AWrzqkaLoWk0glWvyMKLxXUYvNvS/HpCcY0kOCHLBZzbLNe22IzLYYUHqVji5Cy1j+KBfb6kZHUisthPBvLY4CKhhnqYq6udlfV/Q==", "6KXHFMfSzwxrM+L/G/zbmjWzZ7gz6ls0c2rVaJ7Bvr/EcKQXmj2s+aEWFXkZbcv5wJ0oZ8mnADDA2pvvo25/fswJ1wO7JrpOnLnKAGHvaAo3Yrja2d2ZkozGZUbmFnVL2A==", "bn5JGtjFmiPs1bvIE6u0WcIgAkU1lc1rnU2rZJ7Ap7on4c4GOfgkXIGAXG7LB0yVy3rzMQZKRVH5V24Mu2EavtDKy04S7287hNGqu8kmDJX2C2qDXthaAVk/xt8zYZpEEg==", "HA543syRAs0L0rIgYmkHxBOniwWilrJjbeBNs9UrWoWMQ4NTG51pfT7Qifq3Kb7ZLFgvLckJkMu3q0chAD8bVxyr6S8BGGSAxGzGWRHQzBdh7n13x5kcVng7u642tQtKOA==", "9nF/oBFOwRrueWfzVc2n5c1piFaW2SYnk2+eUlGEOSYBTHcXmaTTsk7cDqfCJX9TVzhhqe+tzlisscj4aL/AAxnjMBS/QQSu2+6zJxPPJCLMJL7RgUCDoXxwf+zqzfPOxg==", "qSJMhUn3sDH3VteWuS9XWKdtiP8EKuLsrT0HXwP4wdk8S62HzuF5sDwOXYKmhqX3bswulXdx6l7baE6/mkeudM7+6txeyXhVYcLy0YdbLAZkVpbLpGkBBbfBRsvhKD+pig==", "D018BTZQn3g+c8Uz4hkM7/dIK7w9OAlENynM9y1yCNZUk2UcIN43OQJj+H6K9arrSMAwN7eolNHBQa7bpcibRwpQl9DltYWa/9DtgGqNte1Rbc+4PBeDyTPOULChFe3zcg==", "f98z4QT1XgD5AQKVGR8RSUI8jK45AI3+gRjHPaJFCflASiniv70lHRWJMkPxEshivNhnnfZBMjEcWjbXN07qpp0zhqDhXOaWLDyhYJ9NzSB7K4nqkotTLiGSDgOAp7YWIg=="];
+const ITER = 120000;
+const USED_KEY = "gb_codes_utilises";
 // ========================
 
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
@@ -303,25 +345,48 @@ $("#f-ins").onsubmit = e => {
   go("paiement");
 };
 
-$$("input[name=mode]").forEach(r => r.onchange = () => {
-  const mm = r.value === "Mobile Money";
-  $("#mm-box").hidden = !mm;
-  $("#mm").required = mm;
-});
+function majPaiement() {
+  const m = document.querySelector("input[name=mode]:checked").value;
+  $("#how-tmoney").hidden = m !== "T-Money";
+  $("#how-moov").hidden = m !== "Moov Money";
+}
+$$("input[name=mode]").forEach(r => r.onchange = majPaiement);
+$("#ussd").textContent = CFG.tmoney.replace("{MONTANT}", CFG.prix);
+$$("[data-c=moov]").forEach(e => e.textContent = CFG.moov);
 
+async function sha256(t) {
+  const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+}
+const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+// Essaie d'ouvrir le coffre avec le code saisi ; renvoie le lien WhatsApp ou null
+async function ouvrirCoffre(code) {
+  const base = await crypto.subtle.importKey("raw", new TextEncoder().encode(code), "PBKDF2", false, ["deriveKey"]);
+  for (const item of VAULT) {
+    const d = b64(item), salt = d.slice(0, 16), iv = d.slice(16, 28), ct = d.slice(28);
+    try {
+      const key = await crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: ITER, hash: "SHA-256" }, base, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+      const clair = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, ct);
+      return new TextDecoder().decode(clair);
+    } catch (e) { /* mauvais code pour cette copie */ }
+  }
+  return null;
+}
+
+// Étape 1 : le client déclare son paiement -> en attente de vérification
 $("#f-pay").onsubmit = async e => {
   e.preventDefault();
   const btn = e.submitter, err = $("#err");
   err.textContent = "";
   btn.disabled = true;
-  btn.textContent = "En attente de confirmation…";
+  btn.textContent = "Envoi…";
+  const fd = new FormData(e.target);
+  S.mode = document.querySelector("input[name=mode]:checked").value;
+  S.transaction = fd.get("transaction").trim();
+  S.num_paiement = fd.get("num_paiement");
+  S.statut = "EN ATTENTE DE VÉRIFICATION";
+  S.date_demande = new Date().toLocaleString("fr-FR");
   try {
-    // ⚠️ SIMULATION : pour un vrai paiement, remplacez cette ligne par l'API de votre opérateur
-    // (par exemple CinetPay, FedaPay ou PayDunya) et ne validez qu'après leur confirmation.
-    await new Promise(r => setTimeout(r, 2000));
-    S.mode = new FormData(e.target).get("mode");
-    S.date = new Date().toLocaleDateString("fr-FR");
-    S.recu = "REC-" + Date.now().toString(36).toUpperCase().slice(-6);
     if (CFG.endpoint) {
       const r = await fetch(CFG.endpoint, {
         method: "POST",
@@ -330,13 +395,35 @@ $("#f-pay").onsubmit = async e => {
       });
       if (!r.ok) throw new Error("envoi");
     }
-    fill();
-    go("recu");
+    $("#pay-step1").hidden = true;
+    $("#pay-step2").hidden = false;
   } catch (x) {
-    err.textContent = "L’enregistrement a échoué. Vérifiez votre connexion et réessayez.";
+    err.textContent = "L’envoi a échoué. Vérifiez votre connexion et réessayez.";
   }
   btn.disabled = false;
-  btn.innerHTML = "Payer " + fmt(CFG.prix);
+  btn.textContent = "J’ai payé, envoyer";
+};
+
+// Étape 2 : le client saisit le code reçu de l'organisateur -> reçu + lien WhatsApp
+$("#f-code").onsubmit = async e => {
+  e.preventDefault();
+  const err = $("#err2"), btn = e.submitter;
+  err.textContent = "";
+  const code = $("#code").value.trim().toUpperCase();
+  btn.disabled = true; btn.textContent = "Vérification…";
+  const lien = await ouvrirCoffre(code);
+  btn.disabled = false; btn.textContent = "Valider et voir mon reçu";
+  if (!lien) { err.textContent = "Code incorrect. Vérifiez-le ou contactez l’organisateur."; return; }
+  const h = await sha256(code);
+  const used = JSON.parse(localStorage.getItem(USED_KEY) || "[]");
+  if (used.includes(h)) { err.textContent = "Ce code a déjà été utilisé sur cet appareil. Contactez l’organisateur."; return; }
+  used.push(h);
+  localStorage.setItem(USED_KEY, JSON.stringify(used));
+  S.date = new Date().toLocaleDateString("fr-FR");
+  S.recu = "REC-" + Date.now().toString(36).toUpperCase().slice(-6);
+  $("#wa").href = lien;
+  fill();
+  go("recu");
 };
 
 $("#pdf").onclick = () => print(); // choisir « Enregistrer au format PDF »
